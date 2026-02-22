@@ -1,10 +1,11 @@
 import requests
 import os
 
+# Telegram Daten aus GitHub Secrets
 TOKEN = os.environ["TELEGRAM_TOKEN"]
 CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
 
-# Deine Keywords (ohne "orchestra")
+# Keywords (ohne "orchestra")
 KEYWORDS = [
     "metal gear solid",
     "kingdom come deliverance",
@@ -23,11 +24,13 @@ URLS = [
     "https://www.eventim.de/de/search/?q=game",
 ]
 
+# Funktion, um Telegram Nachricht zu senden
 def send_telegram(message):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     data = {"chat_id": CHAT_ID, "text": message}
     requests.post(url, data=data)
 
+# Funktion, um Treffer zu suchen
 def check():
     found = []
     for url in URLS:
@@ -41,8 +44,11 @@ def check():
             pass
     return list(set(found))
 
+# Hauptprogramm
 if __name__ == "__main__":
     results = check()
     if results:
         message = "🎮 Neue Game Concert Treffer:\n\n" + "\n".join(results)
         send_telegram(message)
+    else:
+        send_telegram("ℹ️ Heute leider nichts gefunden.")
